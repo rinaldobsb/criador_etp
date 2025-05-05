@@ -5,8 +5,11 @@ description = "Sistema de IA para a criação de um assistente focado na constru
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "agno>=1.4.4",
     "beautifulsoup4>=4.13.4",
     "docling>=2.31.0",
+    "ipykernel>=6.29.5",
     "pydantic>=2.11.3",
     "requests>=2.32.3",
+    "spacy>=3.8.5",
 ]
