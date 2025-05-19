@@ -1,11 +1,12 @@
 from src.main import main
-from agent import ETP_Document, ETP_Creator
+
+# from agent import ETP_Document, ETP_Creator
 import flet as ft
 
 import tomllib
 
-with open(".env.toml", mode="r") as file:
-    configs = tomllib.load(file.read)
+with open("src/.env.toml", mode="rb") as file:
+    configs = tomllib.load(file)
 
 
 ft.app(main)

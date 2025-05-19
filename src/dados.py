@@ -46,7 +46,7 @@ exemplos_de_problemas = [
 - 2.1.5. O segundo conjunto de problemas trata das soluções necessárias que o Tribunal atualmente não possui, bem como modernização das soluções existente citados os seguintes pontos:
 - A atual solução de URA nem sempre suporta a alta demanda em período eleitoral;
 - A diversidade de soluções mais modernas no mercado e que, se aplicadas, trazem inúmeros benefícios à Administração e à população.""",
-"""## 2- DESCRIÇÃO DA NECESSIDADE DA CONTRATAÇÃO, CONSIDERADO O PROBLEMA A SER RESOLVIDO SOB A PERSPECTIVA DO INTERESSE PÚBLICO
+    """## 2- DESCRIÇÃO DA NECESSIDADE DA CONTRATAÇÃO, CONSIDERADO O PROBLEMA A SER RESOLVIDO SOB A PERSPECTIVA DO INTERESSE PÚBLICO
 
 A necessidade de contratação de uma empresa especializada para a instalação do sistema de climatização na Central de Atendimento ao Eleitor (CAE) no 1° subsolo do edifício sede do TRE-DF surge a partir de diversas considerações estratégicas e operacionais. Primordialmente, tudo surge a partir do cenário de escassez de recursos que leva a necessidade de centralização do atendimento e vinda dos cartórios espalhados por todas as regiões do DF para a sede do Tribunal. A vinda dos cartórios e criação da central resultou na necessidade de reforma de todo o edifício sede do TRE-DF e a reforma levou a necessidade de adotar um novo sistema de climatização e renovação de ar para a área da CAE-DF.
 
@@ -61,11 +61,9 @@ A centralização de parte do atendimento na edificação da sede do TRE-DF e a 
 Porém no durante a elaboração dos projetos verificou-se a necessidade de instalação de um sistema de ar condicionado para a área de atendimento da CAE. Pelo fato de não ter engenheiro mecânico no quadro do TRE-DF e por não haver tempo hábil para a contratação de empresa para a elaboração dos projetos de ar condicionado, a administração optou por separar as contratações, ou seja, seria licitada a obra civil e contratada uma empresa para elaboração dos projetos de ar condicionado.
 
 Nesse contexto, a empresa Austro Engenharia foi contratada (PA: 0007112-63.2023.6.07.8100) em novembro de 2023 para elaborar um  estudo  que  resultasse  em  especificações  e  dimensionamento  de  um  sistema  de  ar  condicionado  que  atendesse  as  normas  climatização  e  de renovação de ar da área da CAE. Os projetos só foram entregues em março de 2024, mas o recebimento definitivo só foi efetuado em junho de 2024.""",
-"""## 2. DESCRIÇÃO DA NECESSIDADE DA CONTRATAÇÃO, CONSIDERADO O PROBLEMA A SER RESOLVIDO SOB A PERSPECTIVA DO INTERESSE PÚBLICO
+    """## 2. DESCRIÇÃO DA NECESSIDADE DA CONTRATAÇÃO, CONSIDERADO O PROBLEMA A SER RESOLVIDO SOB A PERSPECTIVA DO INTERESSE PÚBLICO
 
 - 2.1 A contratação visa à aquisição de 2 (dois) portais detectores de metais e 2 (dois) scanners de raio-X para uso na nova Central de Atendimento ao Eleitor que está em fase de obras no Edifício Sede deste Tribunal, bem como dos equipamentos do Ed. SEDE que encontram-se quebrados..
 - 2.2 No cumprimento de suas atribuições, a Seção de Polícia Judicial é responsável pela segurança pessoal e patrimonial deste Tribunal. Nesse contexto, é de suma importância a aquisição do objeto ora pretendido, para que a SEPOJ possa ter controle efetivo sobre as pessoas e os objetos que entram e saem do Tribunal.
-- 2.3 Ressalto que a Resolução CNJ nº 435/2021, art. 14º, determina que os tribunais adotem em seus edifícios como medidas de segurança, dentre outros, os bens objeto desta pretensa contratação."""
+- 2.3 Ressalto que a Resolução CNJ nº 435/2021, art. 14º, determina que os tribunais adotem em seus edifícios como medidas de segurança, dentre outros, os bens objeto desta pretensa contratação.""",
 ]
-
-

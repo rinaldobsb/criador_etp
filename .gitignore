@@ -164,4 +164,10 @@ storage/
 # Outros arquivos
 .ruff_cache/
 src/.env.toml
+src/__pycache__/
+src/pages/__pycache__/
 backup_etps/
+dados/
+ETPs/
+ETPs_transformeds/
+.gitignore
