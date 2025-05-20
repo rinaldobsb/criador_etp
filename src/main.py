@@ -1,14 +1,12 @@
 import flet as ft
-from agent import ETP_Creator
+from agent import recebe_dados
 from pages.login import Login
 from pages.formulario import Projeto
 from pages.resultado import Resultado
 from etp import ETP_Document
 from db import create_database, connect_database, Users, ETP
-from pathlib import Path
-from bases_de_conhecimento import base_conhecimento, base_de_etps, base_de_leis
+from my_path import my_path
 
-my_path = Path(".")
 
 
 def initial():
@@ -20,23 +18,25 @@ def initial():
 
 
 def main(page: ft.Page):
-    engine = initial()
+    login = Login(users=Users, engine=initial())
+    projeto = Projeto(
+                    doc_etp=ETP_Document,
+                    engine=initial(),
+                    etp=ETP,
+                    recebe_dados=recebe_dados
+                )
     page.views.clear()
-    page.views.append(Login(users=Users, engine=engine))
+    page.views.append(login)
 
     def route_change(event):
-        troute = ft.TemplateRoute(page.route)
         if page.route == "/projeto":
+            page.views.clear()
             page.views.append(
-                Projeto(
-                    doc_etp=ETP_Document,
-                    workflow_agent=ETP_Creator,
-                    engine=engine,
-                    etp=ETP,
-                )
+                projeto
             )
-        elif page.troute.match == "/resultado/:id":
-            page.views.append(Resultado(troute.id))
+        elif page.route == "/resultado":
+            page.views.clear()
+            page.views.append(Resultado(page.session.get("id_etp")))
         page.update()
 
     def view_pop(event):
@@ -45,12 +45,9 @@ def main(page: ft.Page):
         page.go(top_view.route)
 
     page.on_route_change = route_change
-    page.on_view_pop = view_pop
+    #page.on_view_pop = view_pop
     page.go(page.route)
 
 
 if __name__ == "__main__":
-    base_de_leis.aload(skip_existing=True)
-    base_de_etps.aload(skip_existing=True)
-    base_conhecimento.aload(skip_existing=True)
     ft.app(main, assets_dir="assets")

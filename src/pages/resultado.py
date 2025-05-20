@@ -1,43 +1,48 @@
 import flet as ft
 from sqlmodel import Session, select
-
+from db import connect_database
 from db import ETP
 
 
 class Resultado(ft.View):
-    def __init__(self, id: int, engine):
+    def __init__(self, id_etp):
         super().__init__()
         self.route = "/resultado"
-        self.controls = self.build_page()
+        self.id_etp = id_etp
+        self.controls = self.build_resultado()
         self.appbar = self.build_appbar()
-        self.engine = engine
-        self.id = id
+        self.scroll = ft.ScrollMode.AUTO
 
     def build_appbar(self):
         return ft.AppBar(
-            leading=ft.Icon(name=ft.IconValue.EDIT_DOCUMENT),
+            leading=ft.Icon(name=ft.Icons.EDIT_DOCUMENT),
             title=ft.Text("Gerador de ETPs"),
             actions=[
-                ft.IconButton(icon=ft.IconValue.RETURN_ICON, on_click=self.voltar),
+                ft.IconButton(icon=ft.Icons.KEYBOARD_RETURN, on_click=self.voltar),
             ],
         )
 
     def voltar(self, event):
-        event.page.route("/projeto")
+        event.page.route = "/projeto"
+        event.page.go(event.page.route)
 
-    def build_page(self):
-        return [self.build_resultado()]
+    # def did_mount(self):
+    #     return self.build_resultado()
 
     def build_resultado(self):
-        with Session(self.engine) as session:
-            statement = select(ETP).where(id_ = self.id)
-            result = session.exec(statement)
+        with Session(connect_database("database")) as session:
+            statement1 = select(ETP.nome_do_projeto).where(ETP.id_ == self.id_etp)
+            statement2 = select(ETP.text_markdown).where(ETP.id_ == self.id_etp)
+            nome_do_projeto = session.exec(statement1).first()
+            texto = session.exec(statement2).first()
+
         self.padding = ft.padding.symmetric(horizontal=80, vertical=100)
+        titulo = ft.Text(value=f"Projeto de ETP: {nome_do_projeto}", size=25, weight=ft.FontWeight.BOLD)
         texto_resultado = ft.Markdown(
-            result.text_markdown,
+            value=texto,
             selectable=True,
             extension_set=ft.MarkdownExtensionSet.GITHUB_WEB,
             on_tap_link=lambda e: e.page.launch_url(e.data),
         )
-        coluna = ft.Column(controls=[texto_resultado])
-        return coluna
+        coluna = ft.Column(controls=[titulo, texto_resultado], spacing=15, scroll=ft.ScrollMode.AUTO)
+        return [coluna]

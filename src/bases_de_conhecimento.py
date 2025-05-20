@@ -1,23 +1,25 @@
 from agno.knowledge.text import TextKnowledgeBase
 from agno.knowledge.combined import CombinedKnowledgeBase
-from vectordb import my_vector_db1, my_vector_db2, my_vector_db_combined
-from main import my_path
 
-base_de_etps = TextKnowledgeBase(
-    path=my_path / "base_de_conhecimento" / "base_de_conhecimento_etps",
-    vector_db=my_vector_db1,
+
+def base_de_etps(path, vector_db):
+    return TextKnowledgeBase(
+    path=path,
+    vector_db=vector_db,
     num_documents=10,
     formats=[".txt", ".md"]
 )
-base_de_leis = TextKnowledgeBase(
-    path=my_path / "base_de_conhecimento" / "base_de_conhecimento_leis",
-    vector_db=my_vector_db2,
+def base_de_leis(path, vector_db):
+    return TextKnowledgeBase(
+    path=path,
+    vector_db=vector_db,
     num_documents=10,
     formats=[".txt", ".md"]
 )
 
-base_conhecimento = CombinedKnowledgeBase(
-    sources=[base_de_etps, base_de_leis],
-    vector_db=my_vector_db_combined,
+def base_conhecimento(sources, vector_db):
+    return CombinedKnowledgeBase(
+    sources=sources,
+    vector_db=vector_db,
     num_documents=10
 )

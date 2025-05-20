@@ -5,19 +5,37 @@ from etp import ETP_Document
 from db import ETP, connect_database
 from template import template
 from configs import configurations
-from bases_de_conhecimento import base_conhecimento
+from bases_de_conhecimento import base_conhecimento, base_de_etps, base_de_leis
+from vectordb import my_vector_db1, my_vector_db2, my_vector_db_combined
 from tools import baidu, duckduckgo, jreader, thinking_tool
+from my_path import my_path
 
-from sqlmodel import Session, insert
+from sqlmodel import Session
 
 from agno.agent import Agent
 from agno.models.google import Gemini
 from agno.team.team import Team
 
+caminho_base_conhecimento_etps = my_path / "base_de_conhecimento" / "base_de_conhecimento_etps"
+caminho_base_conhecimento_leis = my_path / "base_de_conhecimento" / "base_de_conhecimento_leis"
+
+caminho_vector_db = my_path / "vector_db"
+
+bases_de_conhecimento = base_conhecimento(
+    [
+        bases1 := base_de_leis(caminho_base_conhecimento_leis, my_vector_db2(configurations, caminho_vector_db)),
+        bases2 := base_de_etps(caminho_base_conhecimento_etps, my_vector_db1(configurations, caminho_vector_db))
+    ],
+    my_vector_db_combined(configurations, caminho_vector_db)
+)
+
+bases_de_conhecimento.load()
+bases1.load()
+bases2.load()
 
 searcher_agent = Agent(
     model=Gemini(
-        id="gemini-2.5-flash", api_key=configurations(".env.toml").get("GEMINI_API")
+        id="gemini-2.0-flash", api_key=configurations("src/.env.toml").get("GEMINI_API")
     ),
     name="Agente de Pesquisa na Internet na área de Licitações e Contratos Administrativos",
     description="Você é um especialsita em pesquisas na web na área de Licitações e Contratos Administrativos e Tecnologia em geral. \
@@ -38,7 +56,7 @@ searcher_agent = Agent(
 
 knowledge_agent = Agent(
     model=Gemini(
-        id="gemini-2.5-flash", api_key=configurations(".env.toml").get("GEMINI_API")
+        id="gemini-2.0-flash", api_key=configurations("src/.env.toml").get("GEMINI_API")
     ),
     name="Agente de Conhecimento especialista em Licitações e Contratos",
     description="Você é um agente de conhecimento, especilista em Licitações e Contratos, que tem acesso às bases de conhecimento do órgãos para subsidiar a elaboração \
@@ -48,13 +66,13 @@ knowledge_agent = Agent(
         "Recebida os dados de entrada, você irá consultar a base de conhecimento",
         "Você sistematizará a consulta e trará os dados necessários para a elaboração do ETP"
     ],
-    knowledge=base_conhecimento,
+    knowledge=bases_de_conhecimento,
     search_knowledge=True
 )
 
 technologist_agent = Agent(
     model=Gemini(
-        id="gemini-2.5-flash", api_key=configurations(".env.toml").get("GEMINI_API")
+        id="gemini-2.0-flash", api_key=configurations("src/.env.toml").get("GEMINI_API")
     ),
     name="Agente de Conhecimento especialista em Tecnologia da Informação",
     description="Você é um especialsita em pesquisas na web na área de Tecnologia da Informação. \
@@ -72,7 +90,7 @@ technologist_agent = Agent(
 
 assistant_elaboration_agent = Agent(
     model=Gemini(
-        id="gemini-2.5-flash", api_key=configurations(".env.toml").get("GEMINI_API")
+        id="gemini-2.0-flash", api_key=configurations("src/.env.toml").get("GEMINI_API")
     ),
     name="Assistente do Editor do Estudo Técnico Preliminar",
     description="Você é um assistente do Editor de Estudo Técnico Preliminar, e seu objetivo é auxiliar na elaboraração do ETP, \
@@ -87,7 +105,7 @@ assistant_elaboration_agent = Agent(
 
 editor_do_ETP = Team(
     model=Gemini(
-        id="gemini-2.5-flash", api_key=configurations(".env.toml").get("GEMINI_API")
+        id="gemini-2.0-flash", api_key=configurations("src/.env.toml").get("GEMINI_API")
     ),
     name="Editor de Estudo Técnico Preliminar especializado.",
     mode="coordinate",
@@ -122,7 +140,7 @@ def processa_dados(lista_dados: List):
 
 def recebe_dados(dados: List) -> int:
     nome_projeto, input = processa_dados(dados)
-    resultado = editor_do_ETP.run(message=input)
+    resultado = editor_do_ETP.run(message=input).content
     dados_para_inserir = ETP(nome_do_projeto=nome_projeto, text_markdown=resultado)
     with Session(connect_database("database")) as session:
         session.add(dados_para_inserir)

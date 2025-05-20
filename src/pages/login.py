@@ -50,10 +50,10 @@ class Login(ft.View):
 
     def login_event(self, event):
         with Session(self.engine) as session:
-            statement = select(self.users).where(self.username.value == self.users.user)
-            result = session.exec(statement=statement)
+            statement = select(self.users.password).where(self.username.value == self.users.user)
+            result = session.exec(statement=statement).first()
             if result:
-                if result.password == self.password:
+                if result == self.password.value:
                     event.page.route = "/projeto"
                 else:
                     self.password.error_text = "Wrong password!"
@@ -61,6 +61,7 @@ class Login(ft.View):
             else:
                 self.username.error_text = "Wrong user!"
                 event.page.update()
+        event.page.update()
 
     def cancel_event(self, event):
         self.username.error_text = None

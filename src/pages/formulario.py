@@ -7,24 +7,25 @@ from sqlmodel import Session, select
 
 class Projeto(ft.View):
     def __init__(
-        self, doc_etp: ETP_Document, recebe_dados: Callable, engine, etp: ETP
+        self, doc_etp: ETP_Document, engine, etp: ETP, recebe_dados: Callable
     ):
         super().__init__()
         self.route = "/projeto"
         self.controls = self.build_page(contexto="")
         self.appbar = self.build_appbar()
         self.doc_etp = doc_etp
-        self.workflow_agent = recebe_dados
         self.engine = engine
         self.db_etp = etp
+        self.recebe_dados = recebe_dados
+        self.scroll = ft.ScrollMode.AUTO
 
     def build_appbar(self):
         return ft.AppBar(
-            leading=ft.Icon(name=ft.IconValue.EDIT_DOCUMENT),
+            leading=ft.Icon(name=ft.Icons.EDIT_DOCUMENT),
             title=ft.Text("Gerador de ETPs"),
             actions=[
                 ft.IconButton(
-                    icon=ft.IconValue.EDIT, on_click=self.inicia_novo_projeto
+                    icon=ft.Icons.EDIT, on_click=self.inicia_novo_projeto
                 ),
                 ft.PopupMenuButton(
                     items=[
@@ -33,7 +34,7 @@ class Projeto(ft.View):
                         ),
                         ft.PopupMenuItem(
                             text="Projetos anteriores",
-                            on_click=self.inicia_projetos_anteriores,
+                            on_click=self.inicia_projetos_anteiores,
                         ),
                     ]
                 ),
@@ -65,7 +66,7 @@ class Projeto(ft.View):
         texto_de_instrucao = ft.Text(
             value="Clique o botão Editar para criar um novo projeto de ETP",
             size=35,
-            weight=ft.FontWeight(value=200),
+            weight=ft.FontWeight.W_300,
         )
         coluna = ft.Column(controls=[texto_de_instrucao])
         return coluna
@@ -80,8 +81,9 @@ class Projeto(ft.View):
         )
         event.page.open(dlg)
         dados = [f.value for f in self.form]
-        id_etp = self.workflow_agent(dados)
-        event.page.route = f"/resultado/{id_etp}"
+        id_etp = self.recebe_dados(dados)
+        event.page.session.set("di", id_etp)
+        event.page.route = "/resultado/"
 
     def cancelar_projeto(self, event):
         for i in self.form:
@@ -91,118 +93,112 @@ class Projeto(ft.View):
     def build_novo_projeto(self):
         self.padding = ft.padding.symmetric(horizontal=60, vertical=40)
         self.form = [
-            ft.TextField(value="Nome do Projeto"),
+            ft.TextField(label="Nome do Projeto"),
             ft.TextField(
-                value="Objetivo do Projeto",
+                label="Objetivo do Projeto",
                 multiline=True,
                 helper_text="Descrição do objetivo do Documento, que é uma contratação de um bem ou de um serviço",
             ),
             ft.TextField(
-                value="Os itens da Contratação",
+                label="Os itens da Contratação",
                 multiline=True,
                 helper_text="Escreva os objetos da contratação da seguinte forma: (<nome>...<nome/> <descrição>...<descrição/> <quantidade>...<quantidade/>)",
             ),
             ft.TextField(
-                value="Problema a ser resolvido",
+                label="Problema a ser resolvido",
                 multiline=True,
                 helper_text="Descrição dos problemas a serem resolvidos na contratação",
             ),
             ft.TextField(
-                value="Necessidades de contratar",
+                label="Necessidades de contratar",
                 multiline=True,
                 helper_text="Descreva as necessidades de contratar o bem ou serviço para resolver o problema",
             ),
             ft.TextField(
-                value="Benefícios da Contratação",
+                label="Benefícios da Contratação",
                 multiline=True,
                 helper_text="Descreva os benefícios diretos e indiretos da contratação dos bens ouserviços do objetivo: <diretos>...<diretos/> <indiretos>...<indiretos/>",
             ),
             ft.TextField(
-                value="Alinhamento da Contratação com os Planos Institucionais do Tribunal",
+                label="Alinhamento da Contratação com os Planos Institucionais do Tribunal",
                 multiline=True,
                 helper_text="Descreve como a Contratação se alinha com a Resolução do CNJ e com o Plano Diretor do TRE-DF no seguinte formato: (<normativo>...<normativo/> <relação>...<relação/>)",
             ),
             ft.TextField(
-                value="Requisitos Funcionais da Contratação",
+                label="Requisitos Funcionais da Contratação",
                 multiline=True,
                 helper_text="Elenque os requisitos funcionais da Contratação",
             ),
             ft.TextField(
-                value="Requisitos Não funcionais da Contratação",
+                label="Requisitos Não funcionais da Contratação",
                 multiline=True,
                 helper_text="Requisitos Não Funcionais da Contratação",
             ),
             ft.TextField(
-                value="Memória de Cálculo da Contratação, quantidade e valor",
+                label="Memória de Cálculo da Contratação, quantidade e valor",
                 multiline=True,
                 helper_text="Descreva a memória de cálculo da contratação, com seus valores e quantidades",
             ),
             ft.TextField(
-                value="Contratações anteriores",
+                label="Contratações anteriores",
                 multiline=True,
                 helper_text="Descreva as contratações anterires, no seguinte formato (<nome>...<nome/> <valores>...<valores>)",
             ),
             ft.TextField(
-                value="Levantamento de contratações públicas",
+                label="Levantamento de contratações públicas",
                 multiline=True,
                 helper_text="Descreva as contratações levantadas na seguinte forma: (<descrição>...<descrição/> <valor>...<valor/>)",
             ),
             ft.TextField(
-                value="Soluções de Mercado",
+                label="Soluções de Mercado",
                 multiline=True,
                 helper_text="Soluções de mercado: (<descrição>...<descrição/> <adequação>...<adequação/> <melhor solução>...<melhor solução/> <justificativa>...<justificativa/>)",
             ),
-            ft.Dropdown(
-                value="Justificativa de Parcelamento do Objeto",
-                options=self.tipos_justificativa_parcelamento,
-            ),
-            ft.TextField(value="Justificativa de economicidade", multiline=True),
             ft.TextField(
-                value="Impactos ambientais",
+                label="Justificativa de Parcelamento do Objeto",
+                multiline=True,
+                helper_text="Coloque a justificativa do parcelamento"
+            ),
+            ft.TextField(label="Justificativa de economicidade", multiline=True),
+            ft.TextField(
+                label="Impactos ambientais",
                 multiline=True,
                 helper_text="Descreva os impactos ambientais da contratação",
             ),
             ft.TextField(
-                value="Gestão de Risco",
+                label="Gestão de Risco",
                 multiline=True,
                 helper_text="Descreva a gestão de risco: (<risco>...<risco/> <probabilidade>...<probabilidade/> <impacto>...<impacto/> <mitigação>...<mitigação/>)",
             ),
         ]
         submit = ft.ElevatedButton("Enviar", on_click=self.enviar_projeto)
         cancel = ft.ElevatedButton("Cancelar", on_click=self.cancelar_projeto)
-        formulario = ft.Column(controls=[*self.form, ft.Row(controls=[submit, cancel])])
+        formulario = ft.Column(controls=[*self.form, ft.Row(controls=[submit, cancel])], scroll=ft.ScrollMode.AUTO, spacing=15)
         return formulario
 
     def build_anteriores(self):
         with Session(self.engine) as session:
-            statement = select(self.db_etp)
-            result = session.exec(statement=statement)
-        lv = ft.ListView(spacing=10, padding=20, auto_scroll=True)
-
+            statement = select(ETP)
+            result = session.exec(statement=statement).all()
+        
         def card(result):
-            controles = []
+            lv = ft.ListView(spacing=10, padding=20, auto_scroll=True)
             for r in result:
-                controle = [
-                    ft.ListTile(
+                lv.controls.append(ft.ListTile(
                         leading=ft.Icon(ft.Icons.ALBUM),
-                        title=ft.Text(f"ETP -> {r.nome_doProjeto}"),
-                        subtitle=ft.Text(r.objetivo),
-                    ),
-                    ft.Row(
-                        [
-                            ft.TextButton(
+                        title=ft.Text(f"Projeto -> {r.nome_do_projeto}"),
+                        trailing=ft.TextButton(
                                 "Acessar",
                                 on_click=self.mostrar_resultado,
-                                data={"id_etp": r._id},
+                                data=r.id_
                             )
-                        ]
-                    ),
-                ]
-                controles.append(controle)
-            return controles
+                    ))
+            return lv
 
-        lv.controls.append(*card(result=result))
-        return ft.Column(controls=[lv])
+        return ft.Column(controls=[card(result=result)])
 
-    def mostrar_resultado(self, event, data):
-        event.page.route = f"/resultado/{data.id_etp}"
+    def mostrar_resultado(self, event):
+        print(event.control.data)
+        event.page.session.set("id_etp", event.control.data)
+        event.page.route = "/resultado"
+        event.page.go(event.page.route)

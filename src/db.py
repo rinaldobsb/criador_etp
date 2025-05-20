@@ -17,11 +17,11 @@ def create_database(database):
 def connect_database(database):
     sqlite_file_name = f"{database}.db"
     sqlite_url = f"sqlite:///{sqlite_file_name}"
-    return create_engine(sqlite_url)
+    return create_engine(sqlite_url, echo=True)
 
 
 class ETP(SQLModel, table=True):
-    id_: int | None = Field(default=None, primary_key=True) # foi alterado TODO: alterar nos outros lugares, não pode iniciar com underscore
+    id_: int = Field(primary_key=True) # foi alterado TODO: alterar nos outros lugares, não pode iniciar com underscore
     nome_do_projeto: str | None = Field(title="Nome do Projeto")
     # objetivo: str | None = Field(title="Objetivo do Documento ETP")
     # lista_objetos: List["List_Objetos_ETP"] = Relationship(back_populates="etp")

@@ -1,5 +1,4 @@
 from typing import List
-from decimal import Decimal
 
 from pydantic import BaseModel, Field
 from dados import exemplos_de_objetivos, exemplos_de_problemas
@@ -35,14 +34,14 @@ class Memoria_Calculo_ETP(BaseModel):
     item: str = Field(title="Item da Contratação")
     calculo: str = Field(title="Memória de Cálculo do item")
     quantidade: int = Field(title="Quantidade do item")
-    total: Decimal = Field(title="Valor total do item", decimal_places=2)
+    total: float = Field(title="Valor total do item", decimal_places=2)
 
 
 class Contratacao_Anterior_ETP(BaseModel):
     """Representa uma contratação anterior, que é pertinente à atual"""
 
     descricao: str = Field(title="Descrição da contratação anterior")
-    valor_total: Decimal = Field(
+    valor_total: float = Field(
         title="Total da contratação anterrior", decimal_places=2
     )
 
@@ -52,7 +51,7 @@ class Contratacoes_Publicas_ETP(BaseModel):
 
     descricao: str = Field(title="Nome da Contratação Pública")
     orgao: str = Field(title="Órgão que fez a contratação")
-    valor_total: Decimal = Field(title="Valor total da contratação", decimal_places=2)
+    valor_total: float = Field(title="Valor total da contratação", decimal_places=2)
 
 
 class Solucoes_de_Mercado_ETP(BaseModel):
@@ -151,4 +150,4 @@ class ETP_Document(BaseModel):
         title="Gestão de Risco",
         description="Lista de riscos da contratação, com a probabilidade de ocorrer, o impacto e as ações de mitigação.",
     )
-    preco_total: Decimal = Field(title="Preço total dos bens ou dos serviços")
+    preco_total: float = Field(title="Preço total dos bens ou dos serviços")
