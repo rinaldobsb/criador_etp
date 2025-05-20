@@ -5,6 +5,6 @@ FROM ghcr.io/astral-sh/uv:bookworm
 WORKDIR /home
 COPY . .
 EXPOSE 8000
+RUN uv run flet run
 
-CMD [ "cd", "home", "&," "uv", "run", "flet", "run" ]
-
+CMD [ "/bin/ls", "-l" ]
