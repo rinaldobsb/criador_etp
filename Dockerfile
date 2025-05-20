@@ -4,5 +4,6 @@ FROM ghcr.io/astral-sh/uv:bookworm
 
 WORKDIR /app
 COPY . .
+EXPOSE 8000
 CMD [ "uv", "run" ]
 
